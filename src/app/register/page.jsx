@@ -1,0 +1,214 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import AuthLeftPanel from "@/components/layout/AuthLeftPanel";
+import Logo from "@/components/layout/Logo";
+import { signIn } from "@/lib/session";
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!name.trim() || !email.trim()) {
+      setError("Nama lengkap dan email wajib diisi.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Kata sandi dan konfirmasi kata sandi tidak cocok!");
+      return;
+    }
+    setError("");
+    signIn(email.trim());
+    router.push("/dashboard");
+  };
+
+  return (
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-ivory-card">
+      {/* Left Panel (Desktop) */}
+      <AuthLeftPanel />
+
+      {/* Right Form Panel */}
+      <div className="flex flex-col justify-center px-6 sm:px-12 lg:px-16 xl:px-24 py-12 min-h-screen">
+        {/* Mobile Header Logo */}
+        <div className="lg:hidden mb-8">
+          <Logo variant="dark" />
+        </div>
+
+        <div className="w-full max-w-md mx-auto space-y-6">
+          {/* Form Title */}
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+              Buat Akun Baru
+            </h1>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-3.5">
+            {/* Nama Lengkap */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-700 block">
+                Nama Lengkap
+              </label>
+              <div className="relative">
+                <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Masukkan nama lengkap"
+                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-emerald-dark transition-colors"
+                />
+              </div>
+            </div>
+
+            {/* Email Field */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-700 block">
+                Email
+              </label>
+              <div className="relative">
+                <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="nama@email.com"
+                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-emerald-dark transition-colors"
+                />
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-700 block">
+                Kata Sandi
+              </label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Masukkan kata sandi"
+                  className="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-emerald-dark transition-colors"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
+                  aria-label="Toggle Password Visibility"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Confirm Password Field */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-700 block">
+                Konfirmasi Kata Sandi
+              </label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Masukkan kata sandi"
+                  className="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-emerald-dark transition-colors"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
+                  aria-label="Toggle Password Visibility"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {error && (
+              <p className="text-[11px] text-rose-700 bg-rose-50 border border-rose-200 rounded-lg px-3 py-2">
+                {error}
+              </p>
+            )}
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full bg-emerald-dark hover:bg-emerald-deep text-white font-semibold py-3 px-4 rounded-xl text-sm shadow-xs transition-colors cursor-pointer mt-2"
+            >
+              Daftar
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="relative my-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-ivory-card px-3 text-gray-400">atau</span>
+            </div>
+          </div>
+
+          {/* Links Below */}
+          <div className="text-center space-y-2.5 text-xs text-gray-600">
+            <p className="text-[11px] text-gray-500">
+              Email wajib diisi.{" "}
+              <Link href="/terms" className="text-gray-700 hover:underline">
+                Syarat & Ketentuan
+              </Link>{" "}
+              dan{" "}
+              <Link href="/privacy" className="text-gray-700 hover:underline">
+                Kebijakan Privasi
+              </Link>
+            </p>
+            <p>
+              Sudah punya akun?{" "}
+              <Link
+                href="/login"
+                className="font-bold text-gray-900 hover:text-emerald-dark hover:underline"
+              >
+                Masuk di sini
+              </Link>
+            </p>
+            <p>
+              Punya travel?{" "}
+              <Link
+                href="/register/travel"
+                className="font-bold text-gray-900 hover:text-emerald-dark hover:underline"
+              >
+                Daftar sebagai Travel
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
